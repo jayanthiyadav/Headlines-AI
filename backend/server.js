@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -8,29 +7,25 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
-    dbName: "headlinecraft"
-})
-.then(() => {
-    console.log("MongoDB Connected Successfully!");
-})
-.catch((error) => {
-    console.log("MongoDB Connection Error:", error.message);
-});
-
 // Home route
 app.get("/", (req, res) => {
-    res.send("Welcome to HeadlineCraft AI Backend!");
+    res.send("Welcome to Headlines AI Backend with Supabase!");
 });
 
 // Test API
 app.get("/api/test", (req, res) => {
     res.json({
-        message: "HeadlineCraft AI API is working!",
+        message: "Headlines AI API is working!",
+        database: "Supabase PostgreSQL",
         status: "Success"
     });
 });
+
+// Supabase headline routes
+app.use(
+    "/api/headlines",
+    require("./routes/headlineRoutes")
+);
 
 const PORT = process.env.PORT || 5000;
 

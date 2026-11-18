@@ -1,32 +1,29 @@
+const supabase = require('../config/supabase');
 
-const mongoose = require("mongoose");
+const Headline = {
+  async create(headlineData) {
+    const { data, error } = await supabase
+      .from('headlines')
+      .insert([{
+        prompt: headlineData.prompt,
+        headline: headlineData.headline
+      }])
+      .select()
+      .single();
 
-const headlineSchema = new mongoose.Schema({
+    if (error) throw error;
+    return data;
+  },
 
-    topic: {
-        type: String,
-        required: true
-    },
+  async getAll() {
+    const { data, error } = await supabase
+      .from('headlines')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-    category: {
-        type: String,
-        required: true
-    },
-
-    tone: {
-        type: String,
-        required: true
-    },
-
-    headlines: {
-        type: [String],
-        required: true
-    }
-
-}, {
-    timestamps: true
-});
-
-const Headline = mongoose.model("Headline", headlineSchema);
+    if (error) throw error;
+    return data;
+  }
+};
 
 module.exports = Headline;
